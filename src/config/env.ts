@@ -9,6 +9,7 @@ const envSchema = z.object({
     DATABASE_URL: z.string().url(),
     JWT_SECRET: z.string().min(32),
     JWT_EXPIRES_IN_SECONDS: z.coerce.number().int().positive().default(3600),
+    WEATHER_CACHE_TTL_SECONDS: z.coerce.number().int().positive().default(600),
 });
 
 const parsed = envSchema.safeParse(process.env);

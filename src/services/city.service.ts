@@ -53,3 +53,15 @@ export async function removeCity(userId: string, cityId: string) {
         throw new AppError("City not found", 404);
     }
 }
+export async function getCity(userId: string, cityId: string) {
+    const city = await prisma.favoriteCity.findFirst({
+        where: { id: cityId, userId },
+        select: cityFields,
+    });
+
+    if (!city) {
+        throw new AppError("City not found", 404);
+    }
+
+    return city;
+}
