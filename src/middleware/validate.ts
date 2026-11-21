@@ -1,19 +1,34 @@
 import { NextFunction, Request, Response } from "express";
-import { ZodType } from "zod";
+import { ZodError, ZodType } from "zod";
 import { AppError } from "../utils/AppError";
+
+function formatIssues(error: ZodError): string {
+    return error.issues
+        .map((issue) => `${issue.path.map(String).join(".") || "input"}: ${issue.message}`)
+        .join("; ");
+}
 
 export function validateBody(schema: ZodType) {
     return (req: Request, _res: Response, next: NextFunction) => {
         const result = schema.safeParse(req.body);
 
         if (!result.success) {
-            const details = result.error.issues
-                .map((issue) => `${issue.path.map(String).join(".") || "body"}: ${issue.message}`)
-                .join("; ");
-            return next(new AppError(details, 400));
+            return next(new AppError(formatIssues(result.error), 400));
         }
 
         req.body = result.data;
+        next();
+    };
+}
+
+export function validateParams(schema: ZodType) {
+    return (req: Request, _res: Response, next: NextFunction) => {
+        const result = schema.safeParse(req.params);
+
+        if (!result.success) {
+            return next(new AppError(formatIssues(result.error), 400));
+        }
+
         next();
     };
 }
