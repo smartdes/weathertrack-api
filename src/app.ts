@@ -5,6 +5,7 @@ import pinoHttp from "pino-http";
 import { env } from "./config/env";
 import { logger } from "./utils/logger";
 import { healthRouter } from "./routes/health.routes";
+import { authRouter } from "./routes/auth.routes";
 import { notFoundHandler, errorHandler } from "./middleware/errorHandler";
 
 export const app = express();
@@ -15,6 +16,7 @@ app.use(cors({ origin: env.CORS_ORIGIN }));
 app.use(express.json({ limit: "10kb" }));
 
 app.use("/health", healthRouter);
+app.use("/api/v1/auth", authRouter);
 
 app.use(notFoundHandler);
 app.use(errorHandler);
