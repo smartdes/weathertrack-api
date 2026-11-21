@@ -7,6 +7,8 @@ const envSchema = z.object({
     LOG_LEVEL: z.enum(["fatal", "error", "warn", "info", "debug", "trace"]).default("info"),
     CORS_ORIGIN: z.string().default("http://localhost:3000"),
     DATABASE_URL: z.string().url(),
+    JWT_SECRET: z.string().min(32),
+    JWT_EXPIRES_IN_SECONDS: z.coerce.number().int().positive().default(3600),
 });
 
 const parsed = envSchema.safeParse(process.env);
